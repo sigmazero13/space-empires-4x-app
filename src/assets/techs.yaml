@@ -45,7 +45,7 @@ tech:
     advanced: true
     shipwreck: false
   - name: Point Defense
-    shortname: Pt. Def.
+    shortname: Point Def.
     start: 0
     cost: [20, 20, 20]
     advanced: true
@@ -66,8 +66,110 @@ tech:
     advanced: true
     shipwreck: false
   - name: Mine Sweep
-    shortname: Mine Sw.
     start: 0
     cost: [10, 15]
     advanced: true
     shipwreck: false
+expansion:
+  - name: C.E. No RC
+    tech:
+      - name: Ship Size
+        cost: [30]
+      - name: Ground Combat
+        shortname: Ground
+        start: 1
+        cost: [10, 15]
+        advanced: false
+        shipwreck: false
+      - name: Terraform
+        cost: [25]
+      - name: Mine Sweep
+        cost: [20]
+      - name: Military Academy
+        shortname: Mil. Acad.
+        start: 0
+        cost: [10, 20]
+        advanced: false
+        shipwreck: false
+      - name: Boarding
+        start: 0
+        cost: [20, 25]
+        advanced: false
+        shipwreck: false
+      - name: Security Forces
+        shortname: Security
+        start: 0
+        cost: [15, 15]
+        advanced: false
+        shipwreck: false
+      - name: Exploration
+        cost: [15]
+      - name: Fast Battlecruiser
+        shortname: Fast BC
+        start: 0
+        cost: [10]
+        advanced: false
+        shipwreck: false
+  - name: Repl. No RC
+    tech:
+      - name: Ship Size
+        cost: [30]
+      - name: Attack
+        cost: [10]
+      - name: Fighter
+        cost: [25]
+      - name: Ground Combat
+        start: 1
+        cost: [10, 15]
+        advanced: false
+        shipwreck: false
+      - name: Terraform
+        cost: [25]
+      - name: Mine Sweep
+        cost: [20]
+      - name: Advanced Construction
+        shortname: Advanced Con.
+        start: 0
+        cost: [10, 10, 10]
+        advanced: false
+        shipwreck: false
+      - name: Anti-Replicator
+        start: 0
+        cost: [10]
+        advanced: false
+        shipwreck: false
+      - name: Military Academy
+        shortname: Mil. Acad.
+        start: 0
+        cost: [10, 20]
+        advanced: false
+        shipwreck: false
+      - name: Boarding
+        start: 0
+        cost: [20, 25]
+        advanced: false
+        shipwreck: false
+      - name: Security Forces
+        start: 0
+        cost: [15, 15]
+        advanced: false
+        shipwreck: false
+      - name: Exploration
+        cost: [15]
+      - name: Fast Battlecruiser
+        shortname: Fast BC
+        start: 0
+        cost: [10]
+        advanced: false
+        shipwreck: false
+      - name: Tractor Beam
+        start: 0
+        cost: [10]
+        advanced: false
+        shipwreck: false
+      - name: Shield Projector
+        shortname: Shield Proj.
+        start: 0
+        cost: [15]
+        advanced: false
+        shipwreck: false

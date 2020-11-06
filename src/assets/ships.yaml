@@ -127,3 +127,98 @@ ship:
     prereq:
       - name: Fighter
         level: 1    
+expansion:
+  - name: C.E. No RC
+    ship:
+      - type: TN
+        name: Titan
+        cp: 32
+        hull: 5
+        size: 7
+        upgrade: true
+      - type: Tran
+        name: Transport
+        cp: 6
+        hull: 1
+        size: 1
+        upgrade: true
+      - type: Inf
+        name: Infantry
+        cp: 2
+        hull: 1
+        size: 1
+        upgrade: true
+      - type: Mar
+        name: Space Marines
+        cp: 3
+        hull: 2
+        size: 1
+        upgrade: true
+      - type: HI
+        name: Heavy Infantry
+        cp: 3
+        hull: 2
+        size: 1
+        upgrade: true
+      - type: Grav
+        name: Grav Armor
+        cp: 4
+        hull: 2
+        size: 1
+        upgrade: true
+      - type: BD
+        name: Boarding Ship
+        cp: 12
+        hull: 2
+        size: 1
+        upgrade: true
+        prereq:
+          - name: Boarding
+            level: 1
+  - name: Repl. No RC
+    ship:
+      - type: TN
+        name: Titan
+        cp: 32
+        hull: 5
+        size: 7
+        upgrade: true
+      - type: Tran
+        name: Transport
+        cp: 6
+        hull: 1
+        size: 1
+        upgrade: true
+      - type: Inf
+        name: Infantry
+        cp: 2
+        hull: 1
+        size: 1
+        upgrade: true
+      - type: Mar
+        name: Space Marines
+        cp: 3
+        hull: 2
+        size: 1
+        upgrade: true
+      - type: HI
+        name: Heavy Infantry
+        cp: 3
+        hull: 2
+        size: 1
+        upgrade: true
+      - type: Grav
+        name: Grav Armor
+        cp: 4
+        hull: 2
+        size: 1
+        upgrade: true
+      - type: BD
+        name: Boarding Ship
+        cp: 12
+        hull: 2
+        size: 1
+        upgrade: true
+        prereq:
+          - name: Boarding
+            level: 1

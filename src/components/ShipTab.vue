@@ -26,7 +26,7 @@
                   size="sm"
                   v-on:click="upgradeShip(data.item)"
                   v-bind:disabled="disableUpgrade(data.item)">
-          Upgr. ({{ data.item.hullSize }})
+          Upg. ({{ data.item.hullSize }})
         </b-button>
       </template>
     </b-table>

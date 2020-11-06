@@ -17,6 +17,13 @@ export class TechnologyProgression {
     this.currentLevel = this._minLevel;
   }
 
+  appendCosts(newCosts) {
+    for (var newCost of newCosts) {
+      this._maxLevel += 1;
+      this.costs[this._maxLevel] = newCost;
+    }
+  }
+
   cleanTitle() {
     return this.title.split(" ").join('');
   }

@@ -10,6 +10,13 @@
         <b-col>
           <button v-confirm="{ok: clearAll, cancel: doNothing, message: 'Are you sure?'}" class="btn btn-danger">Clear All</button>
           <button type="button" class="btn btn-dark" v-on:click="endTurn">End Turn</button>
+           <b-dropdown id="sheet-picker" v-bind:text="sheetType">
+            <b-dropdown-item v-for="sheet in sheets"
+                             v-bind:key="sheet"
+                             v-confirm="{ok: dialog => switchSheet(dialog, sheet), cancel: doNothing, message: 'Switch sheets?  This will reset all data!'}">
+              {{sheet}}
+            </b-dropdown-item>
+          </b-dropdown>
         </b-col>
       </b-row>
       <b-row>
@@ -56,6 +63,7 @@ import TECH_DATA from '../assets/techs.yaml';
 import SHIP_DATA from '../assets/ships.yaml';
 
 var STORAGE_KEY = 'space-empires-4x-v3';
+var SHEET_TYPE_KEY = 'space-empires-4x-v3-sheet';
 
 var seen = [];
 
@@ -104,9 +112,17 @@ export default {
   },
   methods: {
     initialData: function () {
+      var sheetType = localStorage.getItem(SHEET_TYPE_KEY);
+      if (sheetType === null) {
+        sheetType = 'Base Game'
+      }
+      console.log(TECH_DATA);
       var techs = TECH_DATA['tech'].map(tech => new TechnologyProgression(tech));
+      this.addExpansionTechs(sheetType, TECH_DATA, techs);
       var ships = SHIP_DATA['ship'].map(ship => new Ship(ship));
+      this.addExpansionShips(sheetType, SHIP_DATA, ships);
       return {
+        sheetType: sheetType,
         turn: 1,
         commands: [],
         constructionPoints: 0,
@@ -123,6 +139,8 @@ export default {
       if (isEmpty) {
         return this.initialData();
       };
+
+      var sheetType = localStorage.getItem(SHEET_TYPE_KEY);
       var data = spaceEmpiresStorage.fetch();
       var tech_data = data.techs.map(tech => Object.assign(new TechnologyProgression(), JSON.parse(tech)));
       data.techs = tech_data;
@@ -134,6 +152,7 @@ export default {
       
       data.commands = data.commands.map(function(command) { return commandFactory.create(production_sheet, data, command.name, command) });
       
+      data.sheetType = sheetType;
       return data;
     },
     saveData: function() {
@@ -155,6 +174,55 @@ export default {
       spaceEmpiresStorage.clear();
       this._notifyInfo('Data cleaned.');
       location.reload();
+    },
+    switchSheet: function(_dialog, newSheet) {
+      console.log(newSheet);
+      localStorage.setItem(SHEET_TYPE_KEY, newSheet);
+      this.clearAll();
+    },
+    addExpansionTechs(sheetType, TECH_DATA, baseTechs) {
+      var expData = null;
+      for (var exp of TECH_DATA['expansion']) {
+        if (exp['name'] === sheetType) {
+          expData = exp;
+          break;
+        }
+      }
+      if (!expData) {
+        return;
+      }
+      
+      for (var newTech of expData['tech']) {
+        var found = false;
+
+        for (var baseTech of baseTechs) {
+          if (baseTech.title === newTech['name']) {
+            found = true;
+            baseTech.appendCosts(newTech['cost']);
+            break;
+          }
+        }
+
+        if (!found) {
+          baseTechs.push(new TechnologyProgression(newTech));
+        }
+      }
+    },
+    addExpansionShips(sheetType, SHIP_DATA, baseShips) {
+      var expData = null;
+      for (var exp of SHIP_DATA['expansion']) {
+        if (exp['name'] === sheetType) {
+          expData = exp;
+          break;
+        }
+      }
+      if (!expData) {
+        return;
+      }
+
+      for (var newShip of expData['ship']) {
+        baseShips.push(new Ship(newShip));
+      }      
     },
     doNothing: function() {
     },
@@ -252,6 +320,9 @@ export default {
         result += ship.totalMaintenance();
       }
       return result;
+    },
+    sheets() {
+      return [ 'Base Game', 'C.E. No RC', 'Repl. No RC' ]
     }
   }
 }
