@@ -1,9 +1,12 @@
 <template>
   <div id="app">
     <b-container fluid class="main-app">
-      <b-row>
-        <b-col>
+      <b-row align-v="center">
+        <b-col cols="9">
           <h2>Turn {{ turn }} - CPs <span class="badge badge-info">{{ constructionPoints }}</span></h2>
+        </b-col>
+        <b-col class="right" cols="3">
+          <b-button v-b-modal.about-modal><b-icon-question-circle-fill aria-label="Help"></b-icon-question-circle-fill></b-button>
         </b-col>
       </b-row>
       <b-row>
@@ -30,8 +33,8 @@
           </b-tab>
           <b-tab title="Ships">
             <ShipTab v-bind:psheet="this"
-                      v-bind:ships="ships"
-                      v-bind:techs="techs" />
+                       v-bind:ships="ships"
+                       v-bind:techs="techs" />
           </b-tab>
           <b-tab title="History">
             <HistoryTab v-bind:psheet="this" />
@@ -39,6 +42,17 @@
         </b-tabs>
       </b-row>
     </b-container>
+    <b-modal id="about-modal" title="About this App" ok-only>
+      <p>This app was originally created by Quique Porta (<a href="https://twitter.com/quiqueportac">@quiqueportac</a>).</p>
+      <p>See <a href="http://http://space-empires-4x-app.herokuapp.com/">the original app</a>.</p>
+      <p>Source code can be found on <a href="https://github.com/quiqueporta/space-empires-4x-app">Github</a>.</p>
+      <p>Email Quique at <a href="mailto:quiqueporta@gmail.com">quiqueporta@gmail.com</a>.</p>
+      <hr />
+      <p>App forked and extended by Scott Lewis.</p>
+      <p>Forked source code can also be found on <a href="https://github.com/sigmazero13/space-empires-4x-app">Github</a>.</p>
+      <p>Email Scott at <a href="mailto:sigmazero13@gmail.com">sigmazero13@gmail.com</a>.</p>
+      <p>v3.2.0</p>
+    </b-modal>
   </div>  
 </template>
 
@@ -48,16 +62,18 @@ import VuejsDialog from 'vuejs-dialog';
 import VueAnalytics from 'vue-analytics';
 
 import { BootstrapVue } from 'bootstrap-vue';
+import { BIconQuestionCircleFill } from 'bootstrap-vue';
 
 import CPTab from "./CPTab.vue";
 import TechTab from "./TechTab.vue";
 import ShipTab from "./ShipTab.vue";
 import HistoryTab from "./HistoryTab.vue";
 
-import { Ship } from '../models/ships';
+import { Ship, ShipGroup } from '../models/ships';
 import { TechnologyProgression } from '../models/technologies';
 import { CommandFactory, SubtractMaintenancePointsCommand,
-         EndTurnCommand } from '../models/commands';
+         EndTurnCommand, AddColonyPointsCommand, AddMsPipelinePointsCommand,
+         SubtractBidPointsCommand} from '../models/commands';
 
 import TECH_DATA from '../assets/techs.yaml';
 import SHIP_DATA from '../assets/ships.yaml';
@@ -106,7 +122,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css';
 
 export default {
   name: "App",
-  components: { CPTab, TechTab, ShipTab, HistoryTab },
+  components: { CPTab, TechTab, ShipTab, HistoryTab, BIconQuestionCircleFill },
   data: function() {
     return this.loadData(this);
   },
@@ -119,7 +135,7 @@ export default {
       console.log(TECH_DATA);
       var techs = TECH_DATA['tech'].map(tech => new TechnologyProgression(tech));
       this.addExpansionTechs(sheetType, TECH_DATA, techs);
-      var ships = SHIP_DATA['ship'].map(ship => new Ship(ship));
+      var ships = SHIP_DATA['ship'].map(ship => new Ship(ship, techs));
       this.addExpansionShips(sheetType, SHIP_DATA, ships);
       return {
         sheetType: sheetType,
@@ -143,11 +159,17 @@ export default {
 
       var sheetType = localStorage.getItem(SHEET_TYPE_KEY);
       var data = spaceEmpiresStorage.fetch();
-      var tech_data = data.techs.map(tech => Object.assign(new TechnologyProgression(), JSON.parse(tech)));
-      data.techs = tech_data;
+      data.techs = data.techs.map(tech => Object.assign(new TechnologyProgression(), JSON.parse(tech)));
 
-      var ship_data = data.ships.map(ship => Object.assign(new Ship(), JSON.parse(ship)));
-      data.ships = ship_data;
+      data.ships = data.ships.map(ship => {
+        var ship_obj = JSON.parse(ship);
+        var groups = {};
+        for (var group in ship_obj._groups) {
+          groups[group] = Object.assign(new ShipGroup(), ship_obj._groups[group]);
+        }
+        ship_obj._groups = groups;
+        return Object.assign(new Ship(), ship_obj)
+      });
       
       var commandFactory = new CommandFactory();
       
@@ -194,7 +216,7 @@ export default {
         return;
       }
       
-      for (var newTech of expData['tech']) {
+      for (var newTech of expData.tech) {
         var found = false;
 
         for (var baseTech of baseTechs) {
@@ -222,7 +244,7 @@ export default {
         return;
       }
 
-      for (var newShip of expData['ship']) {
+      for (var newShip of expData.ship) {
         baseShips.push(new Ship(newShip));
       }      
     },
@@ -239,7 +261,7 @@ export default {
         return;
       }
 
-      this._executeCommand(new EndTurnCommand(this, this.turn));
+      this._executeCommand(new EndTurnCommand(this, this.turn, this.constructionPoints));
     },
     increaseTurn() {
       this.turn += 1;
@@ -257,38 +279,75 @@ export default {
     decreaseConstructionPoints: function(points) {
       this.constructionPoints -= points;
     },
+    hasAddedColonyPoints: function() {
+      return this.hasAppliedPointOption(AddColonyPointsCommand, false);
+    },
+    hasAddedMsPipelinePoints: function() {
+      return this.hasAppliedPointOption(AddMsPipelinePointsCommand, false);
+    },
     hasSubtractedMaintenancePoints: function() {
-      var result = false;
       var maintVal = this.maintenance;
-            
+      return this.hasAppliedPointOption(SubtractMaintenancePointsCommand, maintVal <= 0);
+    },
+    hasSubtractedBidPoints: function () {
+      return this.hasAppliedPointOption(SubtractBidPointsCommand, false);
+    },
+    hasAppliedPointOption: function(commandToCheck, defaultResult) {
+      var result = defaultResult;
+
       this.commands.forEach(function (command) {
-        if (command instanceof SubtractMaintenancePointsCommand) {
+        if (command instanceof commandToCheck) {
           result = true;
         } else if (command instanceof EndTurnCommand) {
-          result = maintVal <= 0;
+          result = defaultResult;
         }
       });
       return result;
     },
-    purchaseShip: function(ship) {
-      ship.increaseCount();
+    purchaseShip: function(ship, group) {
+      group = ship.increaseCount(group, this.techs);
       this.decreaseConstructionPoints(ship.cost);
+      return group;
     },
-    sellShip: function(ship) {
-      ship.decreaseCount();
+    sellShip: function(ship, group) {
+      ship.decreaseCount(group);
       this.increaseConstructionPoints(ship.cost);
     },
-    loseShip: function(ship) {
-      ship.decreaseCount();
+    loseShip: function(ship, group) {
+      ship.decreaseCount(group);
     },
-    regainShip: function(ship) {
-      ship.increaseCount();
+    regainShip: function(ship, group) {
+      ship.increaseCount(group);
     },
-    upgradeShip: function(ship) {
-      this.decreaseConstructionPoints(ship.hullSize);
+    upgradeGroup: function(ship, group) {
+      this.decreaseConstructionPoints(ship.upgradeCost(group));
+      return ship.upgrade(this.techs, group);
     },
-    downgradeShip: function(ship) {
-      this.increaseConstructionPoints(ship.hullSize);
+    downgradeGroup: function(ship, group, techs) {
+      this.increaseConstructionPoints(ship.upgradeCost(group));
+      ship.downgrade(techs, group);
+    },
+    autoUpgradeShips: function() {
+      for (var ship of this.ships) {
+        if (ship.autoUpgrade) {
+          ship.upgradeAll(this.techs);
+        }
+      }
+    },
+    findTechByTitle: function(title) {
+      for (var tech of this.techs) {
+        if (title == tech.title) {
+          return tech;
+        }
+      }
+
+      return;
+    },
+    splitGroup: function(ship, groupLabel, count, newGroupLabel) {
+      return ship.splitGroup(groupLabel, count, newGroupLabel);
+    },
+    mergeGroups: function(ship, fromGroup, toGroup) {
+      return ship.mergeGroups(fromGroup, toGroup);
     },
     _executeCommand: function(command) {
       command.do();

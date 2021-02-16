@@ -1,19 +1,21 @@
 {
   "name": "space_empires_4x",
   "description": "A Space Empires Production Sheet",
-  "version": "3.0.0",
-  "author": "Scott Lewis <sigmazero13@gmail.com>, Quique Porta <quiqueporta@gmail.com>",
+  "version": "3.2.0",
+  "author": "Quique Porta <quiqueporta@gmail.com>, Scott Lewis <sigmazero13@gmail.com>",
   "license": "MIT",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack serve",
     "build": "cross-env NODE_ENV=production webpack --progress",
+    "build:dev": "cross-env NODE_ENV=development webpack --progress",
     "start": "node server.js",
     "heroku-postbuild": "npm install --only=dev --no-shrinkwrap && npm run build"
   },
   "dependencies": {
     "bootstrap-vue": "^2.18.1",
     "express": "^4.16.2",
+    "lodash": "^4.17.20",
     "serve-static": "^1.13.2",
     "vue": "^2.6.12",
     "vue-analytics": "^5.10.4",
@@ -39,6 +41,7 @@
     "webpack": "^5.0.0-rc.6",
     "webpack-cli": "^4.1.0",
     "webpack-dev-server": "^3.11.0",
+    "workbox-webpack-plugin": "^6.1.0",
     "yamljs": "^0.3.0"
   },
   "engines": {

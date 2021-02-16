@@ -3,73 +3,75 @@ tech:
     start: 1
     cost: [10, 15, 20, 20, 20]
     advanced: false
-    shipwreck: true
+    spacewreck: true
   - name: Attack
     start: 0
     cost: [20, 30,25]
     advanced: false
-    shipwreck: true
+    spacewreck: true
+    hull_limit: true
   - name: Defense
     start: 0
     cost: [20, 30,25]
     advanced: false
-    shipwreck: true
+    spacewreck: true
+    hull_limit: true
   - name: Tactics
     start: 0
     cost: [15, 15, 15]
     advanced: false
-    shipwreck: true
+    spacewreck: true
   - name: Move
     start: 1
     cost: [20, 25, 25, 25, 20, 20]
     advanced: false
-    shipwreck: true
+    spacewreck: true
   - name: Terraform
     start: 0
     cost: [20]
     advanced: false
-    shipwreck: true
+    spacewreck: false
   - name: Exploration
     start: 0
     cost: [15]
     advanced: false
-    shipwreck: true
-  - name: SY
+    spacewreck: false
+  - name: Ship Yard
     start: 1
     cost: [20, 25]
     advanced: false
-    shipwreck: true
+    spacewreck: true
   - name: Fighter
     start: 0
     cost: [25, 25, 25]
     advanced: true
-    shipwreck: false
+    spacewreck: false
   - name: Point Defense
     shortname: Point Def.
     start: 0
     cost: [20, 20, 20]
     advanced: true
-    shipwreck: false
+    spacewreck: false
   - name: Cloaking
     start: 0
     cost: [30, 30]
     advanced: true
-    shipwreck: false
+    spacewreck: false
   - name: Scanner
     start: 0
     cost: [20, 20]
     advanced: true
-    shipwreck: false
+    spacewreck: false
   - name: Mines
     start: 0
     cost: [30]
     advanced: true
-    shipwreck: false
+    spacewreck: false
   - name: Mine Sweep
     start: 0
     cost: [10, 15]
     advanced: true
-    shipwreck: false
+    spacewreck: false
 expansion:
   - name: C.E. No RC
     tech:
@@ -80,7 +82,7 @@ expansion:
         start: 1
         cost: [10, 15]
         advanced: false
-        shipwreck: false
+        spacewreck: false
       - name: Terraform
         cost: [25]
       - name: Mine Sweep
@@ -90,18 +92,18 @@ expansion:
         start: 0
         cost: [10, 20]
         advanced: false
-        shipwreck: false
+        spacewreck: false
       - name: Boarding
         start: 0
         cost: [20, 25]
         advanced: false
-        shipwreck: false
+        spacewreck: false
       - name: Security Forces
         shortname: Security
         start: 0
         cost: [15, 15]
         advanced: false
-        shipwreck: false
+        spacewreck: false
       - name: Exploration
         cost: [15]
       - name: Fast Battlecruiser
@@ -109,7 +111,7 @@ expansion:
         start: 0
         cost: [10]
         advanced: false
-        shipwreck: false
+        spacewreck: false
   - name: Repl. No RC
     tech:
       - name: Ship Size
@@ -122,7 +124,7 @@ expansion:
         start: 1
         cost: [10, 15]
         advanced: false
-        shipwreck: false
+        spacewreck: false
       - name: Terraform
         cost: [25]
       - name: Mine Sweep
@@ -132,28 +134,28 @@ expansion:
         start: 0
         cost: [10, 10, 10]
         advanced: false
-        shipwreck: false
+        spacewreck: false
       - name: Anti-Replicator
         start: 0
         cost: [10]
         advanced: false
-        shipwreck: false
+        spacewreck: false
       - name: Military Academy
         shortname: Mil. Acad.
         start: 0
         cost: [10, 20]
         advanced: false
-        shipwreck: false
+        spacewreck: false
       - name: Boarding
         start: 0
         cost: [20, 25]
         advanced: false
-        shipwreck: false
+        spacewreck: false
       - name: Security Forces
         start: 0
         cost: [15, 15]
         advanced: false
-        shipwreck: false
+        spacewreck: false
       - name: Exploration
         cost: [15]
       - name: Fast Battlecruiser
@@ -161,15 +163,15 @@ expansion:
         start: 0
         cost: [10]
         advanced: false
-        shipwreck: false
+        spacewreck: false
       - name: Tractor Beam
         start: 0
         cost: [10]
         advanced: false
-        shipwreck: false
+        spacewreck: false
       - name: Shield Projector
         shortname: Shield Proj.
         start: 0
         cost: [15]
         advanced: false
-        shipwreck: false
+        spacewreck: false
